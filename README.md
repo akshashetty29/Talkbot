@@ -10,3 +10,5 @@ pip install PyAudio
 (if the above command doesn't work try:
 pip install pipwin
 pipwin install pyaudio)
+
+(note: the code is given in ipynb file as well as text file)
