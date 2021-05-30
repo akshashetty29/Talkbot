@@ -1,0 +1,51 @@
+#Talkbot
+#Import Required Packages
+import random
+import webbrowser
+import pyttsx3
+import speech_recognition as sr
+from chatterbot.trainers import ChatterBotCorpusTrainer
+from  chatterbot import ChatBot
+from speech_recognition.__main__ import r, audio
+
+#Initializing
+engine = pyttsx3.init()
+voices = engine.getProperty('voices')
+engine.setProperty('voice', voices[0].id)
+volume = engine.getProperty('volume')
+engine.setProperty('volume', 100.0)
+rate = engine.getProperty('rate')
+engine.setProperty('rate', rate)
+
+bot = ChatBot('Oreo')
+
+cmd1 = ['open browser', 'open google']
+
+#Training the bot
+bot.set_trainer(ChatterBotCorpusTrainer)
+bot.train('chatterbot.corpus.english')
+
+while True:
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Tell me something:")
+        audio = r.listen(source)
+        try:
+            print("You:" + r.recognize_google(audio))
+        except sr.UnknownValueError:
+            engine.say('I didnt get that. Rerun the code')
+            print(bot.name+": Sorry!!!! I Could not understand audio :(")
+            break
+    if 'bye' in (r.recognize_google(audio) ):
+        reply='Bye'
+        print('{} : {} '.format(bot.name,reply))
+        engine.say('Bye')
+        engine.runAndWait()
+        break
+    elif r.recognize_google(audio) in cmd1:
+        webbrowser.open('www.google.com')
+    else:
+        reply=bot.get_response(r.recognize_google(audio))
+        engine.say(reply)
+        engine.runAndWait()
+        print('{} : {} '.format(bot.name,reply))
